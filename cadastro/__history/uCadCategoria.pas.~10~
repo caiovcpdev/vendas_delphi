@@ -75,11 +75,13 @@ begin
     Result := oCategoria.Gravar
   else if (EstadoDoCadastro = ecAlterar) then
     Result := oCategoria.Atualizar;
+
+
 end;
 
 function TfrmCadCategoria.Excluir: Boolean;
 begin
-  Result:= oCategoria.Apagar;
+
 end;
 {$endregion}
 end.

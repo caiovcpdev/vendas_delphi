@@ -7,8 +7,7 @@ uses
   uTelaHeranca in 'heranca\uTelaHeranca.pas' {frmTelaHeranca},
   Enter in 'terceiros\Enter.pas',
   uCadCategoria in 'cadastro\uCadCategoria.pas' {frmCadCategoria},
-  uEnum in 'heranca\uEnum.pas',
-  cCadCategoria in 'classes\cCadCategoria.pas';
+  uEnum in 'heranca\uEnum.pas';
 
 {$R *.res}
 

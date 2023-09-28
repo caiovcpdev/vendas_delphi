@@ -1,0 +1,24 @@
+unit cCadCategoria;
+
+interface
+
+uses System.Classes,
+     Vcl.Controls,
+     Vcl.ExtCtrls,
+     Vcl.Dialogs;
+
+type
+  Tcategoria = class
+  Private
+  ///variaveis privadas
+  Public
+    constructor Create; //construtor da classe
+    destructor Destroy override;//Destroi a classe usar o override por causa de sobrescrever
+
+  published
+  //variaveis publicas utilizadas para propriedades da classe
+  //parafornecer
+
+implementation
+
+end.

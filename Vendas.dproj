@@ -58,6 +58,7 @@
 				<Form>frmCadCategoria</Form>
 			</DCCReference>
 			<DCCReference Include="heranca\uEnum.pas"/>
+			<DCCReference Include="classes\cCadCategoria.pas"/>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
 			</BuildConfiguration>

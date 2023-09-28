@@ -42,7 +42,7 @@ type
     //procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
-
+     EstadoDoCadastro:TEstadoDoCadastro;
 
     procedure ControlarBotoes(btnNovo, btnAlterar, btnCancelar, btnGravar, btnApagar:TBitBtn;
               Navegador:TDBNavigator;
@@ -64,7 +64,6 @@ type
   public
     { Public declarations }
     IndiceAtual : string;
-     EstadoDoCadastro:TEstadoDoCadastro;
     function Excluir:Boolean; Virtual;
     function Gravar(EstadoDoCadastro:TEstadoDoCadastro):Boolean; Virtual;
   end;

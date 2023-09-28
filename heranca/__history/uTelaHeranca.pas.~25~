@@ -36,6 +36,9 @@ type
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure grdListagemTitleClick(Column: TColumn);
+    procedure mskPrsquisarChange(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure grdListagemDblClick(Sender: TObject);
     //procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
@@ -52,9 +55,15 @@ type
 
     procedure ExibirLabelIndice(campo: string; aLabel: TLabel);
 
+    function ExisteCampoObrigatorio:Boolean;
+    procedure DesabilitarEditPK;
+    procedure LimparEdits;
+
   public
     { Public declarations }
     IndiceAtual : string;
+    function Excluir:Boolean; Virtual;
+    function Gravar(EstadoDoCadastro:TEstadoDoCadastro):Boolean; Virtual;
   end;
 
 var
@@ -63,13 +72,11 @@ var
 implementation
 
 {$R *.dfm}
-
-{procedure TfrmTelaHeranca.FormCreate(Sender: TObject);
-begin
-      Qry.Listagem.Connection := dtmPrincipal.ConexaoDB;
-      dtsListagem.DataSet := QryListagem;
-end;}
-
+{$region 'OBSERVAÇÕES'}
+ //TAG:1 PARA PK
+ //TAG:2 CAMPOS oBRIGATORIOS
+{$endregion}
+{$region 'FUNCOES E PROCEDURES'}
 //Proc controle de tela
 procedure TfrmTelaHeranca.ControlarBotoes(btnNovo, btnAlterar, btnCancelar, btnGravar, btnApagar:TBitBtn;
           Navegador:TDBNavigator;
@@ -95,7 +102,7 @@ var I:Integer;
   begin
     for I := 0 to QryListagem.Fields.Count-1 do
       begin
-        if QryListagem.Fields[i].FieldName = campo then
+        if LowerCase(QryListagem.Fields[i].FieldName) = LowerCase(campo) then
           begin
             Result:= QryListagem.Fields[i].DisplayLabel;
             Break;
@@ -113,13 +120,30 @@ procedure TfrmTelaHeranca.FormClose(Sender: TObject; var Action: TCloseAction);
     QryListagem.Close;
   end;
 
+procedure TfrmTelaHeranca.FormCreate(Sender: TObject);
+  begin
+        //Qry.Listagem.Connection := dtmPrincipal.ConexaoDB;
+        //dtsListagem.DataSet := QryListagem;
+        grdListagem.Options := [dgTitles,dgIndicator,dgColumnResize,dgColLines,dgRowLines,dgTabs,dgRowSelect,dgAlwaysShowSelection,dgCancelOnExit,dgTitleClick,dgTitleHotTrack]
+  end;
+
 procedure TfrmTelaHeranca.FormShow(Sender: TObject);
   begin
     if (QryListagem.SQL.Text <> EmptyStr) then
     begin
+      QryListagem.IndexFieldNames := IndiceAtual;
+      ExibirLabelIndice(IndiceAtual, lblIndice);
       QryListagem.Open;
     end;
+      ControlarBotoes(btnNovo,btnAlterar, btnCancelar, btnGravar, btnApagar, btnNavigator, pgcPrincipal,true);
+      ControlarIncideTab(pgcPrincipal,  0);
+      DesabilitarEditPK;
   end;
+
+procedure TfrmTelaHeranca.grdListagemDblClick(Sender: TObject);
+begin
+  btnAlterar.Click;
+end;
 
 procedure TfrmTelaHeranca.grdListagemTitleClick(Column: TColumn);
   begin
@@ -128,7 +152,82 @@ procedure TfrmTelaHeranca.grdListagemTitleClick(Column: TColumn);
     ExibirLabelIndice(IndiceAtual, lblIndice);
   end;
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
+procedure TfrmTelaHeranca.mskPrsquisarChange(Sender: TObject);
+var
+  TermoPesquisa: string;
+begin
+  TermoPesquisa := AnsiLowerCase(TMaskEdit(Sender).Text); // Converte para minúsculas
+
+  // Utiliza a função Locate com loCaseInsensitive para tornar a pesquisa insensível a maiúsculas e minúsculas
+  QryListagem.Locate(IndiceAtual, TermoPesquisa, [loPartialKey, loCaseInsensitive]);
+end;
+
+function TfrmTelaHeranca.ExisteCampoObrigatorio:Boolean;
+  var I : Integer;
+  begin
+    Result := False;
+    for I := 0 to ComponentCount - 1 do
+      begin
+        if (Components[i] is TLabeledEdit) then
+          begin
+            if (TLabeledEdit(Components[i]).Tag = 2) and (TLabeledEdit(Components[i]).Text='') then
+              begin
+                MessageDlg(TLabeledEdit(Components[i]).EditLabel.Caption + 'É um campo obrigatório',mtInformation,[mbOK],0);
+                TLabeledEdit(Components[i]).SetFocus;
+                Result := True;
+                Break;
+              end;
+          end;
+      end;
+  end;
+
+
+Procedure TfrmTelaHeranca.LimparEdits;
+var i:Integer;
+begin
+  for I := 0 to ComponentCount -1 do begin
+    if (Components[i] is TLabeledEdit) then begin
+       if (TLabeledEdit(Components[i]).Tag = 1) then begin
+          TLabeledEdit(Components[i]).Enabled:=false;
+          Break;
+       end;
+    end;
+  end;
+end;
+
+Procedure TfrmTelaHeranca.DesabilitarEditPK;
+var i:Integer;
+begin
+  for I := 0 to ComponentCount -1 do begin
+    if (Components[i] is TLabeledEdit) then begin
+          TLabeledEdit(Components[i]).Text := '';
+    end
+      else if (Components[i] is TEdit) then begin
+        TEdit(Components[i]).Text := '';
+      end;
+  end;
+end;
+
+
+{$endregion}
+
+{$region 'MÉTODOS VIRTUAIS'}
+function TfrmTelaHeranca.Excluir: Boolean;
+  begin
+    ShowMessage('DELETADO');
+    Result := True;
+  end;
+
+function TfrmTelaHeranca.Gravar(EstadoDoCadastro:TEstadoDoCadastro):Boolean;
+begin
+  if (EstadoDoCadastro = ecInserir) then
+    ShowMessage('Inserir')
+  else if (EstadoDoCadastro = ecAlterar) then
+    ShowMessage('Alterado');
+  Result := True;
+end;
+
+{$endregion}
 
 procedure TfrmTelaHeranca.btnNovoClick(Sender: TObject);
   begin
@@ -144,9 +243,19 @@ procedure TfrmTelaHeranca.btnAlterarClick(Sender: TObject);
 
 procedure TfrmTelaHeranca.btnApagarClick(Sender: TObject);
   begin
-      ControlarBotoes(btnNovo,btnAlterar, btnCancelar, btnGravar, btnApagar, btnNavigator, pgcPrincipal,true);
-      ControlarIncideTab(pgcPrincipal,  0);
-      EstadoDoCadastro:= ecNenhum;
+      Try
+        if (Excluir) then
+          begin
+              ControlarBotoes(btnNovo,btnAlterar, btnCancelar, btnGravar, btnApagar, btnNavigator, pgcPrincipal,true);
+              ControlarIncideTab(pgcPrincipal,  0);
+          end
+          else
+            begin
+              MessageDlg('Erro na Exclusão',mtWarning,[mbOK], 0)
+            end;
+      Finally
+        EstadoDoCadastro:= ecNenhum;
+      End;
   end;
 
 procedure TfrmTelaHeranca.btnCancelarClick(Sender: TObject);
@@ -163,18 +272,21 @@ procedure TfrmTelaHeranca.btnFecharClick(Sender: TObject);
 
 procedure TfrmTelaHeranca.btnGravarClick(Sender: TObject);
 begin
-    Try
-      ControlarBotoes(btnNovo,btnAlterar, btnCancelar, btnGravar, btnApagar, btnNavigator, pgcPrincipal,true);
-      ControlarIncideTab(pgcPrincipal,  0);
+  if ExisteCampoObrigatorio then
+    Abort;
 
-      if(EstadoDoCadastro=ecInserir) then
-      ShowMessage('Inserir')
-      else if (EstadoDoCadastro=ecAlterar) then
-           ShowMessage('Alterado')
+    Try
+      if Gravar(EstadoDoCadastro) then
+        begin
+           ControlarBotoes(btnNovo,btnAlterar, btnCancelar, btnGravar, btnApagar, btnNavigator, pgcPrincipal,true);
+           ControlarIncideTab(pgcPrincipal,  0);
+           EstadoDoCadastro:= ecNenhum;
+      end
       else
-        ShowMessage('Nada aconteceu');
+        begin
+          MessageDlg('Erro na Gravação',mtWarning,[mbOK], 0)
+        end;
     Finally
-      EstadoDoCadastro:= ecNenhum;
     End;
 end;
 

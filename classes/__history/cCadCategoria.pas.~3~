@@ -1,0 +1,62 @@
+unit cCadCategoria;
+
+  interface
+
+uses Classes,
+     Controls,
+     ExtCtrls,
+     Dialogs;
+
+type
+   TCategoria = class
+    Private
+    F_categoriaID : Integer;
+    F_descricao : string;
+    function getCategoriaID: Integer;
+    function getDEscricao: string;
+    procedure setCategoriaID(const Value: Integer);
+    procedure setDescricao(const Value: string);
+    Public
+      constructor Create;
+      destructor Destroy; override;
+    published
+      property categoriaID : Integer read getCategoriaID write setCategoriaID;
+      property descricao : string read getDEscricao write setDescricao;
+    end;
+
+implementation
+
+{ TCategoria }
+
+constructor TCategoria.Create;
+begin
+
+end;
+
+destructor TCategoria.Destroy;
+begin
+
+  inherited;
+end;
+
+function TCategoria.getCategoriaID: Integer;
+begin
+  Result := Self.F_categoriaID;
+end;
+
+function TCategoria.getDEscricao: string;
+begin
+  Result := Self.F_descricao
+end;
+
+procedure TCategoria.setCategoriaID(const Value: Integer);
+begin
+   Self.F_categoriaID := Value;
+end;
+
+procedure TCategoria.setDescricao(const Value: string);
+begin
+  Self.F_descricao := Value;
+end;
+
+end.

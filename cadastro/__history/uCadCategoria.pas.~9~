@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, uTelaHeranca, DB, ZAbstractRODataset, ZAbstractDataset, ZDataset,
-  DBCtrls, Grids, DBGrids, StdCtrls, Buttons, Mask, ExtCtrls, ComCtrls, cCadCategoria, uDTMConexao, uEnum;
+  DBCtrls, Grids, DBGrids, StdCtrls, Buttons, Mask, ExtCtrls, ComCtrls, cCadCategoria, uDTMConexao;
 
 type
   TfrmCadCategoria = class(TfrmTelaHeranca)
@@ -21,8 +21,6 @@ type
   private
     { Private declarations }
     oCategoria:TCategoria;
-    function Excluir:Boolean; override;
-    function Gravar(EstadoDoCadastro:TEstadoDoCadastro):Boolean; override;
   public
     { Public declarations }
   end;
@@ -68,18 +66,5 @@ begin
   oCategoria:=TCategoria.Create(dtmPrincipal.ConexaoDB);
   IndiceAtual:='descricao';
 end;
-{$region 'override'}
-function TfrmCadCategoria.Gravar(EstadoDoCadastro: TEstadoDoCadastro): Boolean;
-begin
-  if (EstadoDoCadastro = ecInserir) then
-    Result := oCategoria.Gravar
-  else if (EstadoDoCadastro = ecAlterar) then
-    Result := oCategoria.Atualizar;
-end;
 
-function TfrmCadCategoria.Excluir: Boolean;
-begin
-  Result:= oCategoria.Apagar;
-end;
-{$endregion}
 end.
