@@ -1,0 +1,27 @@
+inherited frmCadCategoria: TfrmCadCategoria
+  Caption = 'Cadastro de Categorias'
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited pgcPrincipal: TPageControl
+    ExplicitWidth = 1067
+    inherited tabListagem: TTabSheet
+      ExplicitWidth = 1059
+    end
+    inherited tabManutencao: TTabSheet
+      ExplicitWidth = 954
+    end
+  end
+  inherited pnRodaPe: TPanel
+    ExplicitWidth = 1067
+    inherited btnFechar: TBitBtn
+      ExplicitLeft = 968
+    end
+    inherited btnNavigator: TDBNavigator
+      Hints.Strings = ()
+    end
+  end
+  inherited QryListagem: TZQuery
+    SQL.Strings = (
+      'SELECT ID, DESCRICAO FROM CATEGORIA')
+  end
+end

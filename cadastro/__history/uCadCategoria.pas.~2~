@@ -1,0 +1,25 @@
+unit uCadCategoria;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, uTelaHeranca, DB, ZAbstractRODataset, ZAbstractDataset, ZDataset,
+  DBCtrls, Grids, DBGrids, StdCtrls, Buttons, Mask, ExtCtrls, ComCtrls;
+
+type
+  TfrmCadCategoria = class(TfrmTelaHeranca)
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmCadCategoria: TfrmCadCategoria;
+
+implementation
+
+{$R *.dfm}
+
+end.

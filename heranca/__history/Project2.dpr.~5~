@@ -1,0 +1,20 @@
+program Project2;
+
+uses
+  Forms,
+  uPrincipal in '..\uPrincipal.pas' {frmPrincipal},
+  uCadCategoria in '..\cadastro\uCadCategoria.pas' {frmCadCategoria},
+  uTelaHeranca in 'uTelaHeranca.pas' {frmTelaHeranca},
+  uDTMConexao in '..\datamodule\uDTMConexao.pas' {dtmPrincipal: TDataModule};
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TfrmTelaHeranca, frmTelaHeranca);
+  Application.CreateForm(TfrmCadCategoria, frmCadCategoria);
+  Application.CreateForm(TfrmPrincipal, frmPrincipal);
+  Application.CreateForm(TdtmPrincipal, dtmPrincipal);
+  Application.Run;
+end.

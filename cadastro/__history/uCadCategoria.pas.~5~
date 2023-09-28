@@ -1,0 +1,41 @@
+unit uCadCategoria;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, uTelaHeranca, DB, ZAbstractRODataset, ZAbstractDataset, ZDataset,
+  DBCtrls, Grids, DBGrids, StdCtrls, Buttons, Mask, ExtCtrls, ComCtrls;
+
+type
+  TfrmCadCategoria = class(TfrmTelaHeranca)
+    QryListagemID: TIntegerField;
+    QryListagemDESCRICAO: TWideStringField;
+    procedure btnFecharClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmCadCategoria: TfrmCadCategoria;
+
+implementation
+
+{$R *.dfm}
+
+procedure TfrmCadCategoria.btnFecharClick(Sender: TObject);
+begin
+  inherited;
+close;
+end;
+
+procedure TfrmCadCategoria.FormCreate(Sender: TObject);
+begin
+  inherited;
+  IndiceAtual:= 'DESCRICAO'
+end;
+
+end.

@@ -1,0 +1,22 @@
+object dtmPrincipal: TdtmPrincipal
+  OldCreateOrder = False
+  Height = 150
+  Width = 215
+  object ConexaoDB: TZConnection
+    ControlsCodePage = cCP_UTF16
+    AutoEncodeStrings = True
+    Properties.Strings = (
+      'controls_cp=CP_UTF16'
+      'AutoEncodeStrings=True')
+    Connected = True
+    HostName = 'grprodev.gruporecursos.intranet\sql001,1433'
+    Port = 0
+    Database = 'VENDAS_CAIO'
+    User = 'sa'
+    Password = '237recursos2211'
+    Protocol = 'mssql'
+    LibraryLocation = 'C:\Users\caio\Desktop\Projeto_delphi_caio\ntwdblib.dll'
+    Left = 96
+    Top = 56
+  end
+end

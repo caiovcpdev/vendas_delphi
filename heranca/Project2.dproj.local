@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+  <Transactions>
+    <Transaction>2023/09/26 14:55:33.178.pas,C:\Users\caio\Documents\RAD Studio\Projects\Unit1.pas=C:\Users\caio\Desktop\Projeto_delphi_caio\heranca\uTelaHeranca.pas</Transaction>
+    <Transaction>2023/09/26 14:55:33.178.dfm,C:\Users\caio\Documents\RAD Studio\Projects\Unit1.dfm=C:\Users\caio\Desktop\Projeto_delphi_caio\heranca\uTelaHeranca.dfm</Transaction>
+    <Transaction>2023/09/26 14:56:30.590.dproj,C:\Users\caio\Documents\RAD Studio\Projects\Project2.dproj=C:\Users\caio\Desktop\Projeto_delphi_caio\heranca\Project2.dproj</Transaction>
+    <Transaction>2023/09/26 16:07:10.374.pas,C:\Users\caio\Desktop\Projeto_delphi_caio\heranca\Unit1.pas=C:\Users\caio\Desktop\Projeto_delphi_caio\cadastro\uCadCategoria.pas</Transaction>
+    <Transaction>2023/09/26 16:07:10.374.dfm,C:\Users\caio\Desktop\Projeto_delphi_caio\heranca\Unit1.dfm=C:\Users\caio\Desktop\Projeto_delphi_caio\cadastro\uCadCategoria.dfm</Transaction>
+  </Transactions>
+</BorlandProject>

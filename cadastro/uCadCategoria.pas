@@ -1,0 +1,57 @@
+unit uCadCategoria;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, uTelaHeranca, DB, ZAbstractRODataset, ZAbstractDataset, ZDataset,
+  DBCtrls, Grids, DBGrids, StdCtrls, Buttons, Mask, ExtCtrls, ComCtrls;
+
+type
+  TfrmCadCategoria = class(TfrmTelaHeranca)
+    QryListagemID: TIntegerField;
+    QryListagemDESCRICAO: TWideStringField;
+    edtCategoriaID: TLabeledEdit;
+    edtDescricao: TLabeledEdit;
+    procedure btnFecharClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure btnGravarClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmCadCategoria: TfrmCadCategoria;
+
+implementation
+
+{$R *.dfm}
+
+procedure TfrmCadCategoria.btnFecharClick(Sender: TObject);
+begin
+  inherited;
+close;
+end;
+
+procedure TfrmCadCategoria.btnGravarClick(Sender: TObject);
+begin
+  if edtDescricao.Text ='' then        //'' poderia ter sido trocado por EmptyStrting
+    begin
+      ShowMessage('Campo obrigatório');
+      edtDescricao.SetFocus;
+      Abort;
+    end;
+
+  inherited;
+
+end;
+
+procedure TfrmCadCategoria.FormCreate(Sender: TObject);
+begin
+  inherited;
+  IndiceAtual:= 'DESCRICAO'
+end;
+
+end.

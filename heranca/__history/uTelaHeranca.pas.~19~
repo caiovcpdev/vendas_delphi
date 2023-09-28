@@ -1,0 +1,204 @@
+unit uTelaHeranca;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, DBCtrls, Grids, DBGrids, StdCtrls, Buttons, Mask, ComCtrls, ExtCtrls,
+  DB, ZAbstractRODataset, ZAbstractDataset, ZDataset, uDTMConexao, uEnum;
+
+type
+  TfrmTelaHeranca = class(TForm)
+    pgcPrincipal: TPageControl;
+    pnRodaPe: TPanel;
+    tabListagem: TTabSheet;
+    tabManutencao: TTabSheet;
+    pnlListagemTopo: TPanel;
+    mskPrsquisar: TMaskEdit;
+    btnPesquisar: TBitBtn;
+    grdListagem: TDBGrid;
+    btnNovo: TBitBtn;
+    btnAlterar: TBitBtn;
+    btnCancelar: TBitBtn;
+    btnGravar: TBitBtn;
+    btnApagar: TBitBtn;
+    btnFechar: TBitBtn;
+    btnNavigator: TDBNavigator;
+    dtsListagem: TDataSource;
+    QryListagem: TZQuery;
+    lblIndice: TLabel;
+    procedure btnFecharClick(Sender: TObject);
+    procedure btnNovoClick(Sender: TObject);
+    procedure btnCancelarClick(Sender: TObject);
+    procedure btnGravarClick(Sender: TObject);
+    procedure btnApagarClick(Sender: TObject);
+    procedure btnAlterarClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure grdListagemTitleClick(Column: TColumn);
+    procedure mskPrsquisarChange(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    //procedure FormCreate(Sender: TObject);
+  private
+    { Private declarations }
+     EstadoDoCadastro:TEstadoDoCadastro;
+
+    procedure ControlarBotoes(btnNovo, btnAlterar, btnCancelar, btnGravar, btnApagar:TBitBtn;
+              Navegador:TDBNavigator;
+              pgcPrincipal:TPageControl;
+              Flag:Boolean);
+
+    procedure ControlarIncideTab(pgcPrincipal: TPageControl; Indice: Integer);
+
+    function RetornarCampoTraduzido(campo: string): string;
+
+    procedure ExibirLabelIndice(campo: string; aLabel: TLabel);
+
+  public
+    { Public declarations }
+    IndiceAtual : string;
+  end;
+
+var
+  frmTelaHeranca: TfrmTelaHeranca;
+
+implementation
+
+{$R *.dfm}
+
+//Proc controle de tela
+procedure TfrmTelaHeranca.ControlarBotoes(btnNovo, btnAlterar, btnCancelar, btnGravar, btnApagar:TBitBtn;
+          Navegador:TDBNavigator;
+          pgcPrincipal:TPageControl;
+          Flag:Boolean);
+begin
+  btnNovo.Enabled:=Flag;
+  btnApagar.Enabled:=Flag;
+  btnAlterar.Enabled:=Flag;
+  Navegador.Enabled:=Flag;
+  pgcPrincipal.Pages[0].TabVisible :=Flag;
+  btnCancelar.Enabled :=not(Flag); btnGravar.Enabled :=not(Flag);
+end;
+
+procedure TfrmTelaHeranca.ControlarIncideTab(pgcPrincipal:TPageControl;  Indice: Integer);
+  begin
+    if (pgcPrincipal.Pages[Indice].TabVisible) then
+      pgcPrincipal.TabIndex := Indice;
+  end;
+
+function TfrmTelaHeranca.RetornarCampoTraduzido(campo:string):string;
+var I:Integer;
+  begin
+    for I := 0 to QryListagem.Fields.Count-1 do
+      begin
+        if QryListagem.Fields[i].FieldName = campo then
+          begin
+            Result:= QryListagem.Fields[i].DisplayLabel;
+            Break;
+          end;
+      end;
+  end;
+
+procedure TfrmTelaHeranca.ExibirLabelIndice(campo:string; aLabel:TLabel);
+  begin
+    aLabel.Caption:= RetornarCampoTraduzido(campo)
+  end;
+
+procedure TfrmTelaHeranca.FormClose(Sender: TObject; var Action: TCloseAction);
+  begin
+    QryListagem.Close;
+  end;
+
+procedure TfrmTelaHeranca.FormCreate(Sender: TObject);
+  begin
+        //Qry.Listagem.Connection := dtmPrincipal.ConexaoDB;
+        //dtsListagem.DataSet := QryListagem;
+        grdListagem.Options := [dgTitles,dgIndicator,dgColumnResize,dgColLines,dgRowLines,dgTabs,dgRowSelect,dgAlwaysShowSelection,dgCancelOnExit,dgTitleClick,dgTitleHotTrack]
+  end;
+
+procedure TfrmTelaHeranca.FormShow(Sender: TObject);
+  begin
+    if (QryListagem.SQL.Text <> EmptyStr) then
+    begin
+      QryListagem.IndexFieldNames := IndiceAtual;
+      ExibirLabelIndice(IndiceAtual, lblIndice);
+      QryListagem.Open;
+    end;
+      ControlarBotoes(btnNovo,btnAlterar, btnCancelar, btnGravar, btnApagar, btnNavigator, pgcPrincipal,true);
+      ControlarIncideTab(pgcPrincipal,  0);
+  end;
+
+procedure TfrmTelaHeranca.grdListagemTitleClick(Column: TColumn);
+  begin
+    IndiceAtual:= Column.FieldName;
+    QryListagem.IndexFieldNames:= IndiceAtual;
+    ExibirLabelIndice(IndiceAtual, lblIndice);
+  end;
+
+procedure TfrmTelaHeranca.mskPrsquisarChange(Sender: TObject);
+var
+  TermoPesquisa: string;
+begin
+  TermoPesquisa := AnsiLowerCase(TMaskEdit(Sender).Text); // Converte para minúsculas
+
+  // Utiliza a função Locate com loCaseInsensitive para tornar a pesquisa insensível a maiúsculas e minúsculas
+  QryListagem.Locate(IndiceAtual, TermoPesquisa, [loPartialKey, loCaseInsensitive]);
+end;
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+procedure TfrmTelaHeranca.btnNovoClick(Sender: TObject);
+  begin
+    ControlarBotoes(btnNovo,btnAlterar, btnCancelar, btnGravar, btnApagar, btnNavigator, pgcPrincipal,false);
+    EstadoDoCadastro := ecInserir;
+  end;
+
+procedure TfrmTelaHeranca.btnAlterarClick(Sender: TObject);
+  begin
+      ControlarBotoes(btnNovo,btnAlterar, btnCancelar, btnGravar, btnApagar, btnNavigator, pgcPrincipal,false);
+      EstadoDoCadastro := ecAlterar;
+  end;
+
+procedure TfrmTelaHeranca.btnApagarClick(Sender: TObject);
+  begin
+      ControlarBotoes(btnNovo,btnAlterar, btnCancelar, btnGravar, btnApagar, btnNavigator, pgcPrincipal,true);
+      ControlarIncideTab(pgcPrincipal,  0);
+      EstadoDoCadastro:= ecNenhum;
+  end;
+
+procedure TfrmTelaHeranca.btnCancelarClick(Sender: TObject);
+  begin
+      ControlarBotoes(btnNovo,btnAlterar, btnCancelar, btnGravar, btnApagar, btnNavigator, pgcPrincipal,true);
+      ControlarIncideTab(pgcPrincipal,  0);
+      EstadoDoCadastro:= ecNenhum;
+  end;
+
+procedure TfrmTelaHeranca.btnFecharClick(Sender: TObject);
+  begin
+    close;
+  end;
+
+procedure TfrmTelaHeranca.btnGravarClick(Sender: TObject);
+begin
+    Try
+      ControlarBotoes(btnNovo,btnAlterar, btnCancelar, btnGravar, btnApagar, btnNavigator, pgcPrincipal,true);
+      ControlarIncideTab(pgcPrincipal,  0);
+
+      if(EstadoDoCadastro=ecInserir) then
+      ShowMessage('Inserir')
+      else if (EstadoDoCadastro=ecAlterar) then
+           ShowMessage('Alterado')
+      else
+        ShowMessage('Nada aconteceu');
+    Finally
+      EstadoDoCadastro:= ecNenhum;
+    End;
+end;
+
+end.
+
+
+
+
+
+
